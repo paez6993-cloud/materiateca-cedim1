@@ -1,0 +1,94 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-inter: "Inter", system-ui, sans-serif;
+    --font-playfair: "Playfair Display", Georgia, serif;
+  }
+
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply bg-cedar-50 text-ink antialiased;
+  }
+
+  h1, h2, h3 {
+    @apply font-display;
+  }
+}
+
+@layer components {
+  /* Botón primario */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-none border border-ink bg-ink px-6 py-3 text-sm font-medium tracking-wide text-cedar-50 transition-colors hover:bg-cedar-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink disabled:opacity-50;
+  }
+
+  /* Botón secundario */
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-none border border-cedar-300 bg-transparent px-6 py-3 text-sm font-medium tracking-wide text-ink transition-colors hover:bg-cedar-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cedar-400 disabled:opacity-50;
+  }
+
+  /* Botón destructivo */
+  .btn-danger {
+    @apply inline-flex items-center justify-center gap-2 rounded-none border border-red-200 bg-red-50 px-6 py-3 text-sm font-medium tracking-wide text-red-700 transition-colors hover:bg-red-100 disabled:opacity-50;
+  }
+
+  /* Campo de formulario */
+  .field-input {
+    @apply w-full border border-cedar-200 bg-white px-4 py-2.5 text-sm text-ink placeholder-cedar-400 focus:border-cedar-700 focus:outline-none focus:ring-1 focus:ring-cedar-700;
+  }
+
+  .field-label {
+    @apply mb-1.5 block text-xs font-medium uppercase tracking-widest text-cedar-600;
+  }
+
+  /* Badge de estado */
+  .badge {
+    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium;
+  }
+
+  /* Tarjeta de material */
+  .material-card {
+    @apply relative flex flex-col overflow-hidden border border-cedar-200 bg-white transition-shadow hover:shadow-md;
+  }
+
+  /* Separador editorial */
+  .divider {
+    @apply my-8 border-t border-cedar-200;
+  }
+
+  /* Contenedor máximo */
+  .container-site {
+    @apply mx-auto max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+}
+
+/* Carrusel infinito */
+@keyframes carousel-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.carousel-track {
+  animation: carousel-scroll 40s linear infinite;
+  width: max-content;
+}
+
+.carousel-track:hover {
+  animation-play-state: paused;
+}
+
+/* Impresión de etiquetas */
+@media print {
+  body * { visibility: hidden; }
+  .print-label, .print-label * { visibility: visible; }
+  .print-label {
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+}
