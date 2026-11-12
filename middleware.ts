@@ -25,9 +25,13 @@ export async function middleware(request: NextRequest) {
     }
   );
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  let user = null;
+  try {
+    const { data } = await supabase.auth.getUser();
+    user = data.user;
+  } catch {
+    // Si Supabase falla, tratar como no autenticado
+  }
 
   // Proteger rutas /admin/* (excepto /admin/login)
   if (
