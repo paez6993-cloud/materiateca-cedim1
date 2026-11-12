@@ -115,9 +115,16 @@ export default function EditarMaterialPage() {
 
   async function handleEliminar() {
     setDeleting(true);
-    const { error } = await supabase.from("materiales").delete().eq("id", id);
+    const { data: deleted, error } = await supabase
+      .from("materiales")
+      .delete()
+      .eq("id", id)
+      .select();
     if (error) {
-      setMsg({ type: "error", text: "Error al eliminar: " + error.message });
+      setMsg({ type: "error", text: "Error: " + error.message });
+      setDeleting(false);
+    } else if (!deleted || deleted.length === 0) {
+      setMsg({ type: "error", text: "No se pudo eliminar. Puede ser un problema de permisos en Supabase." });
       setDeleting(false);
     } else {
       router.push("/admin/materiales");
