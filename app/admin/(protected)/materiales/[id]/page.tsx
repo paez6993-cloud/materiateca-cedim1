@@ -115,6 +115,16 @@ export default function EditarMaterialPage() {
 
   async function handleEliminar() {
     setDeleting(true);
+    // Borrar propuestas vinculadas primero (FK constraint)
+    const { error: propErr } = await supabase
+      .from("propuestas_publicas")
+      .delete()
+      .eq("material_id", id);
+    if (propErr) {
+      setMsg({ type: "error", text: "Error al limpiar propuestas: " + propErr.message });
+      setDeleting(false);
+      return;
+    }
     const { data: deleted, error } = await supabase
       .from("materiales")
       .delete()
@@ -124,7 +134,7 @@ export default function EditarMaterialPage() {
       setMsg({ type: "error", text: "Error: " + error.message });
       setDeleting(false);
     } else if (!deleted || deleted.length === 0) {
-      setMsg({ type: "error", text: "No se pudo eliminar. Puede ser un problema de permisos en Supabase." });
+      setMsg({ type: "error", text: "No se pudo eliminar. Verifica permisos en Supabase." });
       setDeleting(false);
     } else {
       router.push("/admin/materiales");
