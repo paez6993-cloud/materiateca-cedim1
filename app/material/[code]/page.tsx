@@ -68,10 +68,17 @@ async function getPrendas(codigo: string) {
 async function getProveedores(codigo: string) {
   try {
     const supabase = await createClient();
+    // Buscar el ID del material primero
+    const { data: mat } = await supabase
+      .from("materiales")
+      .select("id")
+      .eq("codigo", codigo)
+      .single();
+    if (!mat) return [];
     const { data } = await supabase
       .from("material_proveedores")
       .select("*, proveedores(*)")
-      .eq("material_codigo", codigo);
+      .eq("material_id", mat.id);
     return data || [];
   } catch {
     return [];

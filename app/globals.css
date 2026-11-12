@@ -13,7 +13,7 @@
   }
 
   body {
-    @apply bg-cedar-50 text-ink antialiased;
+    @apply bg-cedar-50 text-ink antialiased overflow-x-hidden;
   }
 
   h1, h2, h3 {

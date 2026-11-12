@@ -69,7 +69,7 @@ export default async function HomePage() {
               <p className="mb-3 text-xs font-medium uppercase tracking-widest text-cedar-500">
                 Taller de Materiales · CEDIM
               </p>
-              <h1 className="font-display text-6xl font-semibold leading-none tracking-tight text-ink md:text-7xl">
+              <h1 className="font-display text-5xl font-semibold leading-none tracking-tight text-ink sm:text-6xl md:text-7xl">
                 Materiateca
               </h1>
               <p className="mt-6 max-w-lg text-lg leading-relaxed text-cedar-700">
