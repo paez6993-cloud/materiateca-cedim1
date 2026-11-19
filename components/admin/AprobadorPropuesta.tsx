@@ -10,14 +10,44 @@ export function AprobadorPropuesta({ propuesta }: { propuesta: PropuestaPublica 
   const [expanded, setExpanded] = useState(false);
   const [loading, setLoading] = useState(false);
   const [motivo, setMotivo] = useState("");
+  const [fotoFile, setFotoFile] = useState<File | null>(null);
+  const [fotoPreview, setFotoPreview] = useState<string | null>(null);
   const router = useRouter();
+
+  function onFotoChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0] ?? null;
+    setFotoFile(file);
+    if (file) {
+      setFotoPreview(URL.createObjectURL(file));
+    } else {
+      setFotoPreview(null);
+    }
+  }
 
   async function aprobar() {
     setLoading(true);
+    let foto_url: string | null = null;
+
+    if (fotoFile) {
+      const supabase = createClient();
+      const ext = fotoFile.name.split(".").pop();
+      const path = `propuestas/${propuesta.id}/completa.${ext}`;
+      const { error: upErr } = await supabase.storage
+        .from("materiales-fotos")
+        .upload(path, fotoFile, { upsert: true });
+      if (upErr) {
+        alert("Error al subir la foto: " + upErr.message);
+        setLoading(false);
+        return;
+      }
+      const { data: urlData } = supabase.storage.from("materiales-fotos").getPublicUrl(path);
+      foto_url = urlData.publicUrl;
+    }
+
     const res = await fetch("/api/materials/approve", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ propuesta_id: propuesta.id }),
+      body: JSON.stringify({ propuesta_id: propuesta.id, foto_url }),
     });
     if (res.ok) {
       router.refresh();
@@ -64,17 +94,6 @@ export function AprobadorPropuesta({ propuesta }: { propuesta: PropuestaPublica 
 
       {expanded && (
         <div className="border-t border-cedar-200 p-4 space-y-4">
-          {/* Foto si existe */}
-          {(propuesta as any).foto_url && (
-            <a href={(propuesta as any).foto_url} target="_blank" rel="noopener noreferrer">
-              <img
-                src={(propuesta as any).foto_url}
-                alt="Foto del material propuesto"
-                className="max-h-48 w-auto border border-cedar-200 object-cover"
-              />
-            </a>
-          )}
-
           {/* Datos de la propuesta */}
           <div className="grid gap-2 text-sm">
             {[
@@ -107,8 +126,27 @@ export function AprobadorPropuesta({ propuesta }: { propuesta: PropuestaPublica 
               ))}
           </div>
 
+          {/* Foto para aprobar */}
+          <div className="pt-2 border-t border-cedar-200 space-y-2">
+            <p className="text-xs font-medium uppercase tracking-widest text-cedar-500">
+              Foto del material (opcional)
+            </p>
+            {fotoPreview && (
+              <img src={fotoPreview} alt="Vista previa" className="max-h-40 w-auto border border-cedar-200" />
+            )}
+            <label className="inline-flex cursor-pointer items-center gap-2 border border-cedar-300 bg-white px-3 py-2 text-xs text-cedar-700 hover:bg-cedar-50">
+              {fotoFile ? `✓ ${fotoFile.name}` : "Seleccionar foto"}
+              <input type="file" accept="image/*" className="hidden" onChange={onFotoChange} />
+            </label>
+            {fotoFile && (
+              <button type="button" onClick={() => { setFotoFile(null); setFotoPreview(null); }} className="ml-2 text-xs text-cedar-500 hover:text-red-600">
+                × Quitar
+              </button>
+            )}
+          </div>
+
           {/* Acciones */}
-          <div className="flex flex-wrap gap-3 pt-2 border-t border-cedar-200">
+          <div className="flex flex-wrap gap-3">
             <button
               onClick={aprobar}
               disabled={loading}

@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "No autorizado" }, { status: 401 });
   }
 
-  const { propuesta_id } = await req.json();
+  const { propuesta_id, foto_url } = await req.json();
   if (!propuesta_id) {
     return NextResponse.json({ error: "propuesta_id requerido" }, { status: 400 });
   }
@@ -53,6 +53,7 @@ export async function POST(req: NextRequest) {
       estado_revision: "aprobado",
       aprobado_por: user.id,
       aprobado_at: new Date().toISOString(),
+      ...(foto_url ? { foto_completa_url: foto_url } : {}),
     })
     .select("id, familia_fibra")
     .single();
