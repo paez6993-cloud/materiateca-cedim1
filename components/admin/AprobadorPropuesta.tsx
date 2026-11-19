@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 import { FAMILIA_LABELS, CONSTRUCCION_LABELS } from "@/types/database";
 import type { PropuestaPublica } from "@/types/database";
 
