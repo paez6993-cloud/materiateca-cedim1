@@ -2,34 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { Resend } from "resend";
 
-// Límite: máximo 5 propuestas por IP por hora (simple, sin Redis)
-const rateLimitMap = new Map<string, { count: number; reset: number }>();
-
-function checkRateLimit(ip: string): boolean {
-  const now = Date.now();
-  const entry = rateLimitMap.get(ip);
-
-  if (!entry || now > entry.reset) {
-    rateLimitMap.set(ip, { count: 1, reset: now + 60 * 60 * 1000 });
-    return true;
-  }
-
-  if (entry.count >= 5) return false;
-
-  entry.count++;
-  return true;
-}
-
 export async function POST(req: NextRequest) {
-  // Rate limit
-  const ip = req.headers.get("x-forwarded-for") ?? "unknown";
-  if (!checkRateLimit(ip)) {
-    return NextResponse.json(
-      { error: "Demasiadas propuestas. Intenta en una hora." },
-      { status: 429 }
-    );
-  }
-
   let body: Record<string, string>;
   try {
     body = await req.json();
