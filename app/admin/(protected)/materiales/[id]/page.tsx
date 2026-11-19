@@ -66,7 +66,7 @@ export default function EditarMaterialPage() {
     const path = `${material.codigo || id}/completa.${ext}`;
 
     const { error: upErr } = await supabase.storage
-      .from("materiales-fotos")
+      .from("propuestas-fotos")
       .upload(path, file, { upsert: true });
 
     if (upErr) {
@@ -76,7 +76,7 @@ export default function EditarMaterialPage() {
     }
 
     const { data: urlData } = supabase.storage
-      .from("materiales-fotos")
+      .from("propuestas-fotos")
       .getPublicUrl(path);
 
     const { error: dbErr } = await supabase
