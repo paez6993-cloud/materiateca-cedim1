@@ -32,6 +32,7 @@ export async function POST(req: NextRequest) {
     proveedor_nombre: body.proveedor_nombre?.slice(0, 200) || null,
     proveedor_contacto: body.proveedor_contacto?.slice(0, 300) || null,
     notas: body.notas?.slice(0, 1000) || null,
+    foto_url: body.foto_url || null,
   };
 
   // Usar service role para insertar (pasa el RLS que permite INSERT público)

@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { FAMILIA_LABELS, CONSTRUCCION_LABELS } from "@/types/database";
+import { createClient } from "@/lib/supabase/client";
 
 const schema = z.object({
   nombre_material: z.string().min(2, "El nombre del material es requerido"),
@@ -26,6 +27,8 @@ type FormData = z.infer<typeof schema>;
 export function PropuestaForm() {
   const [enviado, setEnviado] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [fotoFile, setFotoFile] = useState<File | null>(null);
+  const [subiendo, setSubiendo] = useState(false);
 
   const {
     register,
@@ -35,11 +38,32 @@ export function PropuestaForm() {
 
   async function onSubmit(data: FormData) {
     setError(null);
+    let foto_url: string | null = null;
+
+    // Subir foto si se seleccionó una
+    if (fotoFile) {
+      setSubiendo(true);
+      const supabase = createClient();
+      const ext = fotoFile.name.split(".").pop();
+      const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+      const { error: upErr } = await supabase.storage
+        .from("propuestas-fotos")
+        .upload(path, fotoFile, { upsert: false });
+      if (upErr) {
+        setError("Error al subir la foto: " + upErr.message);
+        setSubiendo(false);
+        return;
+      }
+      const { data: urlData } = supabase.storage.from("propuestas-fotos").getPublicUrl(path);
+      foto_url = urlData.publicUrl;
+      setSubiendo(false);
+    }
+
     try {
       const res = await fetch("/api/proposals", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ ...data, foto_url }),
       });
       if (!res.ok) {
         const body = await res.json();
@@ -155,6 +179,32 @@ export function PropuestaForm() {
         />
       </div>
 
+      {/* Foto */}
+      <div>
+        <label className="field-label">Foto del material (opcional)</label>
+        <div className="mt-1 space-y-2">
+          <label className="inline-flex cursor-pointer items-center gap-2 border border-cedar-300 bg-white px-4 py-2.5 text-sm text-cedar-700 hover:bg-cedar-50">
+            {fotoFile ? `✓ ${fotoFile.name}` : "Seleccionar imagen"}
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => setFotoFile(e.target.files?.[0] ?? null)}
+            />
+          </label>
+          {fotoFile && (
+            <button
+              type="button"
+              onClick={() => setFotoFile(null)}
+              className="ml-2 text-xs text-cedar-500 hover:text-red-600"
+            >
+              × Quitar
+            </button>
+          )}
+        </div>
+        <p className="mt-1 text-xs text-cedar-400">JPG, PNG o WebP · máx 5 MB</p>
+      </div>
+
       <div className="divider" />
 
       {/* Datos del proponente */}
@@ -194,8 +244,8 @@ export function PropuestaForm() {
         </p>
       )}
 
-      <button type="submit" disabled={isSubmitting} className="btn-primary w-full">
-        {isSubmitting ? "Enviando…" : "Enviar propuesta"}
+      <button type="submit" disabled={isSubmitting || subiendo} className="btn-primary w-full">
+        {subiendo ? "Subiendo foto…" : isSubmitting ? "Enviando…" : "Enviar propuesta"}
       </button>
     </form>
   );

@@ -64,6 +64,17 @@ export function AprobadorPropuesta({ propuesta }: { propuesta: PropuestaPublica 
 
       {expanded && (
         <div className="border-t border-cedar-200 p-4 space-y-4">
+          {/* Foto si existe */}
+          {(propuesta as any).foto_url && (
+            <a href={(propuesta as any).foto_url} target="_blank" rel="noopener noreferrer">
+              <img
+                src={(propuesta as any).foto_url}
+                alt="Foto del material propuesto"
+                className="max-h-48 w-auto border border-cedar-200 object-cover"
+              />
+            </a>
+          )}
+
           {/* Datos de la propuesta */}
           <div className="grid gap-2 text-sm">
             {[
