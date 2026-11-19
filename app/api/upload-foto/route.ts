@@ -16,6 +16,12 @@ export async function POST(req: NextRequest) {
   }
 
   const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
+  if (ext === "heic" || ext === "heif") {
+    return NextResponse.json(
+      { error: "Las fotos de iPhone (HEIC) no son compatibles. Convierte la imagen a JPG antes de subirla." },
+      { status: 400 }
+    );
+  }
   const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
 
   const arrayBuffer = await file.arrayBuffer();
