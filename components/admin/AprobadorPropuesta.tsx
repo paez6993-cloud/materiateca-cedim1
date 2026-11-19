@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
 import { FAMILIA_LABELS, CONSTRUCCION_LABELS } from "@/types/database";
 import type { PropuestaPublica } from "@/types/database";
 
@@ -29,19 +28,17 @@ export function AprobadorPropuesta({ propuesta }: { propuesta: PropuestaPublica 
     let foto_url: string | null = null;
 
     if (fotoFile) {
-      const supabase = createClient();
-      const ext = fotoFile.name.split(".").pop();
-      const path = `propuestas/${propuesta.id}/completa.${ext}`;
-      const { error: upErr } = await supabase.storage
-        .from("propuestas-fotos")
-        .upload(path, fotoFile, { upsert: true });
-      if (upErr) {
-        alert("Error al subir la foto: " + upErr.message);
+      const fd = new FormData();
+      fd.append("file", fotoFile);
+      const upRes = await fetch("/api/upload-foto", { method: "POST", body: fd });
+      if (!upRes.ok) {
+        const err = await upRes.json();
+        alert("Error al subir la foto: " + (err.error || "intenta de nuevo"));
         setLoading(false);
         return;
       }
-      const { data: urlData } = supabase.storage.from("propuestas-fotos").getPublicUrl(path);
-      foto_url = urlData.publicUrl;
+      const { url } = await upRes.json();
+      foto_url = url;
     }
 
     const res = await fetch("/api/materials/approve", {

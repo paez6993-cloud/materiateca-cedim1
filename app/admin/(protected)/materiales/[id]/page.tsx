@@ -62,32 +62,26 @@ export default function EditarMaterialPage() {
     setUploading(true);
     setMsg(null);
 
-    const ext = file.name.split(".").pop();
-    const path = `${material.codigo || id}/completa.${ext}`;
-
-    const { error: upErr } = await supabase.storage
-      .from("propuestas-fotos")
-      .upload(path, file, { upsert: true });
-
-    if (upErr) {
-      setMsg({ type: "error", text: "Error subiendo la foto: " + upErr.message });
+    const fd = new FormData();
+    fd.append("file", file);
+    const upRes = await fetch("/api/upload-foto", { method: "POST", body: fd });
+    if (!upRes.ok) {
+      const err = await upRes.json();
+      setMsg({ type: "error", text: "Error subiendo la foto: " + (err.error || "intenta de nuevo") });
       setUploading(false);
       return;
     }
-
-    const { data: urlData } = supabase.storage
-      .from("propuestas-fotos")
-      .getPublicUrl(path);
+    const { url } = await upRes.json();
 
     const { error: dbErr } = await supabase
       .from("materiales")
-      .update({ foto_completa_url: urlData.publicUrl })
+      .update({ foto_completa_url: url })
       .eq("id", id);
 
     if (dbErr) {
       setMsg({ type: "error", text: "Foto subida pero error al guardar URL." });
     } else {
-      setMaterial((m: any) => ({ ...m, foto_completa_url: urlData.publicUrl }));
+      setMaterial((m: any) => ({ ...m, foto_completa_url: url }));
       setMsg({ type: "ok", text: "Foto actualizada." });
     }
     setUploading(false);
