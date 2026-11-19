@@ -33,14 +33,14 @@ export function AprobadorPropuesta({ propuesta }: { propuesta: PropuestaPublica 
       const ext = fotoFile.name.split(".").pop();
       const path = `propuestas/${propuesta.id}/completa.${ext}`;
       const { error: upErr } = await supabase.storage
-        .from("materiales-fotos")
+        .from("propuestas-fotos")
         .upload(path, fotoFile, { upsert: true });
       if (upErr) {
         alert("Error al subir la foto: " + upErr.message);
         setLoading(false);
         return;
       }
-      const { data: urlData } = supabase.storage.from("materiales-fotos").getPublicUrl(path);
+      const { data: urlData } = supabase.storage.from("propuestas-fotos").getPublicUrl(path);
       foto_url = urlData.publicUrl;
     }
 
