@@ -180,7 +180,7 @@ export default function EditarMaterialPage() {
           </span>
           <input
             type="file"
-            accept="image/jpeg,image/png,image/webp"
+            accept="image/*"
             className="hidden"
             onChange={handleFoto}
             disabled={uploading}
