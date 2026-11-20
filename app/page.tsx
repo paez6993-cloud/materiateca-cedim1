@@ -1,5 +1,6 @@
 import { NavBar } from "@/components/catalog/NavBar";
 import { InfiniteCarousel } from "@/components/catalog/InfiniteCarousel";
+import { DatoCurioso } from "@/components/catalog/DatoCurioso";
 import Link from "next/link";
 
 export const revalidate = 60;
@@ -41,21 +42,6 @@ export default async function HomePage() {
     getDatosCuriosos(),
     getMaterialesRecientes(),
   ]);
-
-  const diaDelAnio = Math.floor(
-    (Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) /
-      (1000 * 60 * 60 * 24)
-  );
-  const datoCurioso =
-    datosCuriosos.length > 0
-      ? datosCuriosos[diaDelAnio % datosCuriosos.length]
-      : null;
-
-  // Dato curioso de relleno mientras no haya datos reales
-  const datoCuriosoMostrar = datoCurioso ?? {
-    texto: "El lino es una de las fibras naturales más antiguas del mundo — se han encontrado telas de lino en tumbas egipcias de más de 4,000 años de antigüedad.",
-    fuente: "Enciclopedia Textil",
-  };
 
   return (
     <>
@@ -109,23 +95,18 @@ export default async function HomePage() {
         </section>
 
         {/* ¿Sabías que...? */}
-        <section className="border-b border-cedar-200 bg-cedar-100 py-12">
-          <div className="container-site">
-            <p className="mb-3 text-xs font-medium uppercase tracking-widest text-cedar-500">
-              ¿Sabías que…?
-            </p>
-            <blockquote className="max-w-3xl">
-              <p className="font-display text-2xl leading-snug text-ink md:text-3xl">
-                "{datoCuriosoMostrar.texto}"
+        {datosCuriosos.length > 0 && (
+          <section className="border-b border-cedar-200 bg-cedar-100 py-12">
+            <div className="container-site">
+              <p className="mb-5 text-xs font-medium uppercase tracking-widest text-cedar-500">
+                ¿Sabías que…?
               </p>
-              {datoCuriosoMostrar.fuente && (
-                <footer className="mt-4 text-sm text-cedar-500">
-                  Fuente: {datoCuriosoMostrar.fuente}
-                </footer>
-              )}
-            </blockquote>
-          </div>
-        </section>
+              <div className="max-w-3xl">
+                <DatoCurioso datos={datosCuriosos} />
+              </div>
+            </div>
+          </section>
+        )}
 
         {/* Acerca del proyecto */}
         <section className="py-16">
