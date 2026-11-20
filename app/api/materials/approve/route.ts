@@ -47,6 +47,7 @@ export async function POST(req: NextRequest) {
       construccion: propuesta.construccion,
       origen: propuesta.origen,
       proveedor_nombre: propuesta.proveedor_nombre,
+      proveedor_contacto: propuesta.proveedor_contacto,
       notas: propuesta.notas,
       propuesto_por_nombre: propuesta.nombre_proponente,
       propuesto_por_correo: propuesta.correo_proponente,

@@ -240,6 +240,14 @@ export default async function MaterialPage({
                 {material.usos_sugeridos && (
                   <Fila label="Usos sugeridos">{material.usos_sugeridos}</Fila>
                 )}
+                {material.proveedor_nombre && (
+                  <Fila label="Proveedor">
+                    {material.proveedor_nombre}
+                    {material.proveedor_contacto && (
+                      <span className="ml-2 text-cedar-500">· {material.proveedor_contacto}</span>
+                    )}
+                  </Fila>
+                )}
                 {material.ubicacion_taller && (
                   <Fila label="Ubicación en taller">{material.ubicacion_taller}</Fila>
                 )}
