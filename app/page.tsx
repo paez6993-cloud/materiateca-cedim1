@@ -136,14 +136,16 @@ export default async function HomePage() {
                   Acerca de la Materiateca
                 </h2>
                 <p className="text-sm leading-relaxed text-cedar-700 mb-4">
-                  La Materiateca es el archivo vivo de materiales textiles del
-                  taller de CEDIM. Cada muestra física tiene una ficha digital con
-                  su composición, familia de fibra, construcción y trazabilidad.
+                  La Materiateca es la biblioteca de materiales textiles del
+                  taller de CEDIM. Nació para facilitar el conocimiento de los
+                  textiles: identificarlos, entender su composición y construcción,
+                  y saber dónde conseguirlos.
                 </p>
                 <p className="text-sm leading-relaxed text-cedar-700">
-                  Cuando un campo aparece como <span className="italic text-cedar-400">No identificado</span>,
-                  significa que el dato no ha podido verificarse con una fuente
-                  confiable. Preferimos ser honestos sobre lo que no sabemos.
+                  Cada muestra tiene una ficha digital con su información técnica
+                  y el proveedor donde fue adquirida, para que toda la comunidad
+                  CEDIM pueda compartir ese conocimiento y acceder a los mismos
+                  materiales.
                 </p>
               </div>
 
@@ -167,7 +169,7 @@ export default async function HomePage() {
                   <ol className="list-decimal pl-5 space-y-1.5 text-sm text-cedar-700">
                     <li>En la ficha del material, haz clic en "Solicitar préstamo".</li>
                     <li>Pasa al taller y deja una identificación con Ivette.</li>
-                    <li>La muestra debe regresar íntegra <strong>al día siguiente</strong>.</li>
+                    <li>La muestra debe regresar íntegra en un plazo máximo de <strong>una semana</strong>.</li>
                   </ol>
                 </div>
               </div>
