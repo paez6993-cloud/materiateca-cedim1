@@ -60,7 +60,7 @@ function ContenidoPrestamo() {
                 {
                   num: "02",
                   titulo: "Deja tu identificación",
-                  texto: "Para llevarte la muestra debes dejar una identificación vigente (credencial CEDIM o identificación oficial) como garantía.",
+                  texto: "Para llevarte la muestra debes dejar una identificación oficial vigente como garantía.",
                 },
                 {
                   num: "03",
@@ -93,9 +93,8 @@ function ContenidoPrestamo() {
               {[
                 "Sentir el gramaje, la caída y la textura real de la tela — cosas que no se pueden percibir en una foto.",
                 "Comparar cómo se comporta el material con la luz, doblado o estirado.",
-                "Llevarlo a una tlapalería o tienda de telas para encontrar algo similar o exactamente igual.",
+                "Llevarlo a una tienda de telas para encontrar algo similar o exactamente igual.",
                 "Usarlo como referencia de color frente a otros materiales en tu proyecto.",
-                "Hacer pruebas de costura, teñido o acabado antes de comprar metros.",
               ].map((item) => (
                 <li key={item} className="flex gap-3 text-sm text-cedar-700">
                   <span className="text-cedar-300 flex-shrink-0">—</span>
@@ -114,8 +113,7 @@ function ContenidoPrestamo() {
               {[
                 "No cortes, rayes ni alfileres la muestra — es compartida por todos los estudiantes.",
                 "Evita mojarla, mancharla o exponerla a productos químicos.",
-                "Regresa la muestra doblada o enrollada, nunca arrugada.",
-                "Si ocurre un accidente, avísale a Ivette antes de devolverla.",
+                "Regresa la muestra en las mismas condiciones en que la recibiste.",
               ].map((regla) => (
                 <p key={regla} className="text-sm text-cedar-700 flex gap-3">
                   <span className="text-cedar-400 flex-shrink-0">·</span>
